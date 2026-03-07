@@ -1,0 +1,92 @@
+# Circuit breaker for analytics-service
+# Ejects pods on repeated errors, limits connections, and retries on failure
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: analytics-service
+  namespace: devops-avenue
+spec:
+  host: analytics-service
+  trafficPolicy:
+    connectionPool:
+      tcp:
+        maxConnections: 100
+      http:
+        http1MaxPendingRequests: 50 
+        http2MaxRequests: 100   # max concurrent active requests
+        maxRequestsPerConnection: 2 # after 2 requests on a connection, Istio closes and reopens it
+    outlierDetection:
+      consecutiveErrors: 3
+      interval: 10s
+      baseEjectionTime: 30s
+      maxEjectionPercent: 50
+      minHealthPercent: 40
+    retries:
+      attempts: 3
+      perTryTimeout: 2s
+      retryOn: 5xx,reset,connect-failure,refused-stream
+
+---
+# Retry and connection policies for user-service
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: user-service
+  namespace: devops-avenue
+spec:
+  host: user-service
+  trafficPolicy:
+    connectionPool:
+      tcp:
+        maxConnections: 100
+      http:
+        http1MaxPendingRequests: 50
+        http2MaxRequests: 100
+    outlierDetection:
+      consecutiveErrors: 3
+      interval: 10s
+      baseEjectionTime: 30s
+    retries:
+      attempts: 3
+      perTryTimeout: 2s
+      retryOn: 5xx,reset,connect-failure,refused-stream
+
+---
+# Retry and connection policies for recommendation-service
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: recommendation-service
+  namespace: devops-avenue
+spec:
+  host: recommendation-service
+  trafficPolicy:
+    connectionPool:
+      tcp:
+        maxConnections: 100
+      http:
+        http1MaxPendingRequests: 50
+        http2MaxRequests: 100
+    outlierDetection:
+      consecutiveErrors: 2
+      interval: 10s
+      baseEjectionTime: 30s
+    retries:
+      attempts: 2
+      perTryTimeout: 3s
+      retryOn: 5xx,reset,connect-failure
+
+---
+# Retry policy for blog-service
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: blog-service-retry
+  namespace: devops-avenue
+spec:
+  host: blog-service
+  trafficPolicy:
+    retries:
+      attempts: 3
+      perTryTimeout: 2s
+      retryOn: 5xx,reset,connect-failure

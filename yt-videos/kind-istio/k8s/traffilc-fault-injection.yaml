@@ -1,0 +1,76 @@
+#  75% traffic abort for the services
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: analytics-service-fault
+  namespace: devops-avenue
+spec:
+  hosts:
+  - analytics-service
+  http:
+  - fault:
+      abort:
+        percentage:
+          value: 75
+        httpStatus: 500
+    route:
+    - destination:
+        host: analytics-service
+
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: user-service-fault
+  namespace: devops-avenue
+spec:
+  hosts:
+  - user-service
+  http:
+  - fault:
+      abort:
+        percentage:
+          value: 75
+        httpStatus: 500
+    route:
+    - destination:
+        host: user-service
+
+---
+# recommendation-service: 50% abort
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: recommendation-service-fault
+  namespace: devops-avenue
+spec:
+  hosts:
+  - recommendation-service
+  http:
+  - fault:
+      abort:
+        percentage:
+          value: 50
+        httpStatus: 500
+    route:
+    - destination:
+        host: recommendation-service
+
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: blog-service-fault
+  namespace: devops-avenue
+spec:
+  hosts:
+  - blog-service
+  http:
+  - fault:
+      abort:
+        percentage:
+          value: 60
+        httpStatus: 500
+    route:
+    - destination:
+        host: blog-service
