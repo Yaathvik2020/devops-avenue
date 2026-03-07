@@ -21,10 +21,6 @@ spec:
       baseEjectionTime: 30s
       maxEjectionPercent: 50
       minHealthPercent: 40
-    retries:
-      attempts: 3
-      perTryTimeout: 2s
-      retryOn: 5xx,reset,connect-failure,refused-stream
 
 ---
 # Retry and connection policies for user-service
@@ -46,10 +42,6 @@ spec:
       consecutiveErrors: 3
       interval: 10s
       baseEjectionTime: 30s
-    retries:
-      attempts: 3
-      perTryTimeout: 2s
-      retryOn: 5xx,reset,connect-failure,refused-stream
 
 ---
 # Retry and connection policies for recommendation-service
@@ -71,22 +63,4 @@ spec:
       consecutiveErrors: 2
       interval: 10s
       baseEjectionTime: 30s
-    retries:
-      attempts: 2
-      perTryTimeout: 3s
-      retryOn: 5xx,reset,connect-failure
 
----
-# Retry policy for blog-service
-apiVersion: networking.istio.io/v1beta1
-kind: DestinationRule
-metadata:
-  name: blog-service-retry
-  namespace: devops-avenue
-spec:
-  host: blog-service
-  trafficPolicy:
-    retries:
-      attempts: 3
-      perTryTimeout: 2s
-      retryOn: 5xx,reset,connect-failure
