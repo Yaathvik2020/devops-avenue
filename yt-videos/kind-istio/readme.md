@@ -61,10 +61,11 @@ Bash script included [here](script/set_cluster.sh) would:  1) Install the latest
 
 ### Deploy the Web App
 
-1. Download App manifests located [here](k8s/)
+1. Download App manifests located [here](k8s/). Exit out of session, move the files from repo to the kind cluster, login
     ```
-    wget https://raw.githubusercontent.com/gurlal-1/devops-avenue/refs/heads/main/yt-videos/kind-istio/k8s/
+    sssh -i <ssh_key_location> directory_location ec2-user@<public_IP>:/home/ec2-user/k8s/
     ```
+    Example: `scp -i ~/Downloads/demo-devops-avenue-ue2.pem ../k8s/* ec2-user@<public_IP>:/home/ec2-user/k8s/`
 
 2. Switch to the downloaded directory and create a namespace
     ```
@@ -75,9 +76,8 @@ Bash script included [here](script/set_cluster.sh) would:  1) Install the latest
     ```
     kubectl apply -f secrets.yaml 
     ```
-    3.2 directly in terminal
+    3.2 directly in terminal. create secrets manually to avoid hardcoding secrets into manifests
     ```
-    create secrets manually to avoid hardcoding secrets into manifests
     kubectl create secret generic app-secrets \
       --namespace devops-avenue \
       --from-literal=JWT_SECRET=$#@dfklhjkdrfe24s@$%^rrd3 \
@@ -100,9 +100,12 @@ These commands use manifest which include deployments and service(clusterIP) res
     ```
 6. Access the frontend app locally  
   6.1 enable port forwarding in tmux session
+   ```
+   tmux set -g mouse on
+   tmux
+   ```
       ```
-      tmux
-      kubectl port-forward service/frontend 5001:5001
+      kubectl port-forward service/frontend 5001:5001 -n devops-avenue
       ```
     Deattach tmux session: `ctrl+b` followed by `d`   
   6.2 Access the app
@@ -149,19 +152,23 @@ These commands use manifest which include deployments and service(clusterIP) res
 
 1. Download, install and add its path to bin
     ```
+    cd ..
     curl -L https://istio.io/downloadIstio | sh -
     cd istio*
-    export PATH="$PATH:/home/ec2-user/istio-1.29.0/istio-1.29.0/bin"
     ```
-2. Install Istio with`demo` profile
+2. Add binary to the path:
+   ```
+   export PATH="$PATH:/home/ec2-user/istio-1.29.0/bin"
+   ```
+3. Install Istio with`demo` profile
     ```
     istioctl install --set profile=demo -y
     ```
-3. Now you can check resources got installed
+4. Now you can check resources got installed
     ```
     kubectl get all -n istio-system
     ```
-4. Label your namespace to enable sidecar injection 
+5. Label your namespace to enable sidecar injection 
     ```
     kubectl label namespace devops-avenue istio-injection=enabled
     ```
@@ -186,10 +193,9 @@ These commands use manifest which include deployments and service(clusterIP) res
     ```
     kubectl get svc -n istio-system
     ```
-4. Port-forwarding to access add ons
+9. Port-forwarding to access add ons
 
     ```
-    tmux set -g mouse on
     tmux
     ```
     have three vertical panes: `ctrl+b`, `&`
@@ -202,8 +208,20 @@ These commands use manifest which include deployments and service(clusterIP) res
     ```
     kubectl -n istio-system port-forward --address 0.0.0.0 svc/prometheus 9090:9090
     ```
-9. Generate app traffic using the script [here](/script/generate_traffic.sh)
-10. Access envoy logs from your pods about traffic
+10. Generate app traffic using the script [here](/script/generate_traffic.sh)
+    10.1 Download
+    ```
+    wget https://raw.githubusercontent.com/gurlal-1/devops-avenue/refs/heads/main/yt-videos/kind-istio/script/generate_traffic.sh
+    ```
+    10.2 launch another tmux and run it
+    ```
+    tmux
+    ```
+    ```
+    chmod +x ./generate_traffic.sh
+    ./generate_traffic.sh
+    ```
+12. Access envoy logs from your pods about traffic
     ```
     kubectl logs -n devops-avenue <pod-name> -c istio-proxy
     ```
@@ -212,7 +230,7 @@ These commands use manifest which include deployments and service(clusterIP) res
     ```
     kubectl exec -n devops-avenue blog-service-v1-5649585dcd-cb87t -c istio-proxy --   curl -s localhost:15000/stats | grep istio_requests_total
     ```
-11. Easier way to access those logs via grafana: <http://NodeIP:3000>
+13. Easier way to access those logs via grafana: <http://NodeIP:3000>
 
 ### VirtualService & Destination Rules
 
@@ -236,7 +254,10 @@ These commands use manifest which include deployments and service(clusterIP) res
     ```
     kubectl apply -f telemetry.yaml
     ```
-2. Expose and Access the jaeger UI
+2. Tmux another session, expose and Access the jaeger UI
+   ```
+   tmux
+   ```
     ```
     kubectl -n istio-system port-forward --address 0.0.0.0 svc/tracing 8080:80
     ```
@@ -249,7 +270,7 @@ These commands use manifest which include deployments and service(clusterIP) res
     ```
 2. Other options to access and configure Istio
     ```
-    istio -help
+    istioctl -help
     ```
 
 ### Cleanup
