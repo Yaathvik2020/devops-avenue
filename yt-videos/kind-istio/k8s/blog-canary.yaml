@@ -1,0 +1,36 @@
+# canary deployment, 90% traffic to blog-service v1, 10% to v2
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: blog-canary-vs
+  namespace: devops-avenue
+spec:
+  hosts:
+  - blog-service
+  http:
+  - route:
+    - destination:
+        host: blog-service
+        subset: v1
+      weight: 90
+    - destination:
+        host: blog-service
+        subset: v2
+      weight: 10
+
+---
+# Defines v1/v2 pod subsets used by the canary VirtualService above
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: blog-canary-dr
+  namespace: devops-avenue
+spec:
+  host: blog-service
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+  - name: v2
+    labels:
+      version: v2

@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recommendation-service
+  namespace: devops-avenue
+  labels:
+    app: recommendation-service
+    version: v1
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: recommendation-service
+  template:
+    metadata:
+      labels:
+        app: recommendation-service
+        version: v1
+    spec:
+      containers:
+      - name: recommendation-service
+        image: devopsavenue/recommendation-service:v1
+        ports:
+        - containerPort: 5006
+          name: http
+        env:
+        - name: PORT
+          value: "5006"
+        - name: BLOG_SERVICE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: BLOG_SERVICE_URL
+        - name: ANALYTICS_SERVICE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: ANALYTICS_SERVICE_URL
+        - name: USER_SERVICE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: USER_SERVICE_URL
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: recommendation-service
+  namespace: devops-avenue
+  labels:
+    app: recommendation-service
+spec:
+  type: ClusterIP
+  ports:
+  - port: 5006
+    targetPort: 5006
+    protocol: TCP
+    name: http
+  selector:
+    app: recommendation-service

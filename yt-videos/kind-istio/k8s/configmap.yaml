@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: devops-avenue
+data:
+  # Internal service URLs (using Kubernetes DNS)
+  BLOG_SERVICE_URL: "http://blog-service:5004"
+  ANALYTICS_SERVICE_URL: "http://analytics-service:5007"
+  RECOMMENDATION_SERVICE_URL: "http://recommendation-service:5006"
+  USER_SERVICE_URL: "http://user-service:5003"
+  #update your domain
+  BASE_URL: "http://istio.gurlal.com"
+  LOGIN_URL: "http://istio.gurlal.com/login"
