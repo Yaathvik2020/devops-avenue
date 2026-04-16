@@ -116,7 +116,7 @@ Exit the nodes and return to the bastion host.
     
     ```bash
     mkdir -p $HOME/.kube
-    scp -i demo-devops-avenue-ue2.pem ec2-user@$MASTER_IP:/home/ec2-user/.kube/config $HOME/.kube/config
+    scp -i 88chinna.pem ec2-ubuntu@$MASTER_IP:/home/ubuntu/.kube/config $HOME/.kube/config
     sudo chown $(id -u):$(id -g) $HOME/.kube/config
     ```
     NOTE: change Master_IP
