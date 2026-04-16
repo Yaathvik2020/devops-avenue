@@ -110,7 +110,7 @@ Exit the nodes and return to the bastion host.
     gpgcheck=1
     gpgkey=https://pkgs.k8s.io/core:/stable:/${RELEASE}/rpm/repodata/repomd.xml.key
     EOF"
-    sudo dnf install kubectl -y
+    sudo apt install kubectl -y
     ```
 2. Create the config dir and move the kubernetes config from the master node:
     
