@@ -1,6 +1,6 @@
 variable "region" {
 type = string
-default = "us-east-2"
+default = "ap-south-1"
 description = "AWS region"
 }
 
@@ -36,22 +36,22 @@ variable "bastian_host_name" {
 #provide your key name
 variable "key_pair" {
   description = "The name of the key pair to use for EC2 instances"
-  default = "demo-devops-avenue-ue2"
+  default = "88chinna"
   type        = string
 }
 
 variable "cluster_node_type" {
 type = string
-default = "t2.medium" 
+default = "t3.large" 
 }
 variable "bastian_instance_type" {
 type = string
-default = "t2.micro" 
+default = "t2.small" 
 }
 
 variable "volume_size" {
     type = number
-    default = 15
+    default = 30
 }
 
 
