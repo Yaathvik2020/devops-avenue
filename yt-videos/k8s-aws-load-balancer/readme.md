@@ -34,21 +34,22 @@ __NOTE__: Only the bastion host is accessible from the external network. Cluster
     `scp -i <key for ssh> <pem key> ec2-user@<bastin_public_ip>:<dst_location>`  
     _Example_: `scp -i 88chinna.pem 88chinna.pem ubuntu@$BASTIAN_IP:/home/ubuntu`
 2. (Optional) Copy tmux or other personalized config to the bastion host.  
-    _Example_: `scp -i demo-devops-avenue-ue2.pem ~/.tmux.conf ec2-user@$BASTIAN_IP:/home/ec2-user`
+    _Example_: `scp -i 88chinna.pem ~/.tmux.conf  ubuntu@$BASTIAN_IP:/home/ubuntu`
 3. Connect to the bastain host via SSH.  
-    _Example_: `ssh -i demo-devops-avenue-ue2.pem ec2-user@$BASTIAN_IP`  
+    _Example_: `ssh -i 88chinna.pem ubuntu@$BASTIAN_IP`  
     Install `tmux` and `git`:
     
     ```bash
-    sudo yum update && sudo yum upgrade
+    sudo apt update && sudo apt upgrade
     sudo hostnamectl set-hostname "bastian-node"
-    sudo dnf install git tmux -y
+    sudo apt install tmux
+    tmux -V
     ```
 4. Connect to each instance via SSH from th bastion host. 
 5. (Tip) Install tmux, export IPs into variables and create multiple sessions in tmux to connect to all instance at once. \
-    `ssh -i demo-devops-avenue-ue2.pem ec2-user@<MASTER_IP>`  
-    `ssh -i demo-devops-avenue-ue2.pem ec2-user@<WORKER1_IP>`  
-    `ssh -i demo-devops-avenue-ue2.pem ec2-user@<WORKER2_IP>`
+    `ssh -i 88chinna.pem ubuntu@<MASTER_IP>`  
+    `ssh -i 88chinna.pem ubuntu@<WORKER1_IP>`  
+    `ssh -i 88chinna.pem ubuntu@<WORKER2_IP>`
  
 ### Create Kubernetes Cluster
 Use a script to create a Kubernetes cluster with kubeadm.
