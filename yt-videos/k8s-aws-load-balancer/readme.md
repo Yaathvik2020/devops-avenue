@@ -32,7 +32,7 @@ __NOTE__: Only the bastion host is accessible from the external network. Cluster
 
 1. Copy the PEM key to the bastion host  
     `scp -i <key for ssh> <pem key> ec2-user@<bastin_public_ip>:<dst_location>`  
-    _Example_: `scp -i demo-devops-avenue-ue2.pem demo-devops-avenue-ue2.pem ec2-user@$BASTIAN_IP:/home/ec2-user`
+    _Example_: `scp -i 88chinna.pem 88chinna.pem ubuntu@$BASTIAN_IP:/home/ubuntu`
 2. (Optional) Copy tmux or other personalized config to the bastion host.  
     _Example_: `scp -i demo-devops-avenue-ue2.pem ~/.tmux.conf ec2-user@$BASTIAN_IP:/home/ec2-user`
 3. Connect to the bastain host via SSH.  
