@@ -102,16 +102,13 @@ Exit the nodes and return to the bastion host.
     ```bash
     RELEASE="$(curl -sSL https://dl.k8s.io/release/stable.txt)"
     RELEASE="${RELEASE%.*}"
-    sudo bash -c "cat <<EOF > /etc/yum.repos.d/kubernetes.repo
-    [kubernetes]
-    name=Kubernetes
-    baseurl=https://pkgs.k8s.io/core:/stable:/${RELEASE}/rpm/
-    enabled=1
-    gpgcheck=1
-    gpgkey=https://pkgs.k8s.io/core:/stable:/${RELEASE}/rpm/repodata/repomd.xml.key
-    EOF"
-    sudo apt install kubectl -y
-    ```
+    sudo apt-get install -y apt-transport-https ca-certificates curl gnupg
+    curl -fsSL https://pkgs.k8s.io/core:/stable:/RELEASE/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+    sudo chmod 644 /etc/apt/keyrings/kubernetes-apt-keyring.gpg # allow unprivileged APT programs to read this keyring
+    echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/RELEASE/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+    sudo chmod 644 /etc/apt/sources.list.d/kubernetes.list   # helps tools such as command-not-found to work correctly
+    sudo apt-get update
+    sudo apt-get install -y kubectl
 2. Create the config dir and move the kubernetes config from the master node:
     
     ```bash
