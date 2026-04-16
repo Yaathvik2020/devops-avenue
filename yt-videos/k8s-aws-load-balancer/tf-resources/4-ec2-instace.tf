@@ -1,21 +1,27 @@
-data "aws_ami" "latest_ami" {
+data "aws_ami" "ubuntu_24_04" {
   most_recent = true
+  owners      = ["099720109477"] # Canonical's Official AWS Account ID
 
   filter {
     name   = "name"
-    values = ["al2023-ami-2023*-x86_64"]
+    values = ["ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*"]
+	          
   }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
   filter {
     name   = "architecture"
     values = ["x86_64"]
   }
-
-  owners = ["amazon"]
 }
 
 # control plane
 resource "aws_instance" "demo-k8s-aws-alb-master-node" {
-  ami           = data.aws_ami.latest_ami.id
+  ami           = data.aws_ami.ubuntu_24_04.id
   instance_type = var.cluster_node_type
   iam_instance_profile = aws_iam_instance_profile.demo-k8s-aws-alb-iam-profile.name
   source_dest_check = false
@@ -35,7 +41,7 @@ resource "aws_instance" "demo-k8s-aws-alb-master-node" {
 #worker nodes
 resource "aws_instance" "demo-k8s-aws-alb-worker-node" {
   for_each      = toset(var.worker_nodes_names)
-  ami           = data.aws_ami.latest_ami.id
+  ami           = data.aws_ami.ubuntu_24_04.id
   iam_instance_profile = aws_iam_instance_profile.demo-k8s-aws-alb-iam-profile.name
   source_dest_check = false
   instance_type = var.cluster_node_type
@@ -54,7 +60,7 @@ resource "aws_instance" "demo-k8s-aws-alb-worker-node" {
 
 #Bastian Host
 resource "aws_instance" "demo-k8s-aws-alb-bastian-node" {
-  ami           = data.aws_ami.latest_ami.id
+  ami           = data.aws_ami.ubuntu_24_04.id
   instance_type = var.bastian_instance_type
   key_name      = var.key_pair
   associate_public_ip_address = true
