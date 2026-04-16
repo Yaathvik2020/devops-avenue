@@ -113,7 +113,7 @@ Exit the nodes and return to the bastion host.
     
     ```bash
     mkdir -p $HOME/.kube
-    scp -i 88chinna.pem ec2-ubuntu@$MASTER_IP:/home/ubuntu/.kube/config $HOME/.kube/config
+    scp -i 88chinna.pem  ubuntu@$MASTER_IP:/home/ubuntu/.kube/config $HOME/.kube/config
     sudo chown $(id -u):$(id -g) $HOME/.kube/config
     ```
     NOTE: change Master_IP
