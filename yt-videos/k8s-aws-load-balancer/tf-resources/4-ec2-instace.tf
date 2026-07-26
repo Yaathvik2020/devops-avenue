@@ -5,7 +5,7 @@ data "aws_ami" "ubuntu_24_04" {
   filter {
     name   = "name"
     values = ["ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*"]
-	          
+
   }
 
   filter {
@@ -46,10 +46,11 @@ resource "aws_instance" "demo-k8s-aws-alb-worker-node" {
   source_dest_check = false
   instance_type = var.cluster_node_type
   key_name      = var.key_pair
+  associate_public_ip_address = true
   vpc_security_group_ids = [
     aws_security_group.demo-k8s-aws-alb-sg.id
   ]
-  subnet_id = module.demo-k8s-aws-alb-vpc.private_subnets[1]
+  subnet_id = module.demo-k8s-aws-alb-vpc.public_subnets[0]
   root_block_device {
     volume_size = var.volume_size
   }
@@ -67,7 +68,7 @@ resource "aws_instance" "demo-k8s-aws-alb-bastian-node" {
   vpc_security_group_ids = [
     aws_security_group.demo-bastian-sg.id
   ]
-  subnet_id = module.demo-k8s-aws-alb-vpc.public_subnets[0]
+  subnet_id = module.demo-k8s-aws-alb-vpc.public_subnets[1]
   root_block_device {
     volume_size = var.volume_size
   }
