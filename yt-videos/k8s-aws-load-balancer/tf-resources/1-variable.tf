@@ -11,7 +11,7 @@ default = "172.32.0.0/16"
 
 variable "vpc_name" {
 type = string
-default = "demo-k8s-aws-alb" 
+default = "demo-k8s-aws-alb"
 }
 
 variable "tags" {
@@ -42,11 +42,11 @@ variable "key_pair" {
 
 variable "cluster_node_type" {
 type = string
-default = "t3.large" 
+default = "t3.large"
 }
 variable "bastian_instance_type" {
 type = string
-default = "t2.small" 
+default = "t2.small"
 }
 
 variable "volume_size" {
@@ -60,7 +60,7 @@ variable "public_subnet_tags" {
 type = map(string)
 default = {
     "kubernetes.io/role/elb"  = 1
-    "kubernetes.io/cluster/kubernetes"	= "owned"
+    "kubernetes.io/cluster/kubernetes"  = "owned"
 }
 description = "Tags to apply to all private subnets for lb discovery"
 }
@@ -69,5 +69,3 @@ variable "disabe_cluster_src_dst_check" {
   type = bool
   default = false
   description = "Disable source destination check for calico/ overlay network"
-  
-}
