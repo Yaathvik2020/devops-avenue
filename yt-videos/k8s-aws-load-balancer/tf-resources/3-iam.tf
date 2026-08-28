@@ -273,3 +273,8 @@ resource "aws_iam_policy" "demo-k8s-aws-alb-custom-policy" {
             ],
             "Resource": "*"
         }
+    ]
+}
+  )
+}
+~
